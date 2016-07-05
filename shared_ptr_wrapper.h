@@ -39,7 +39,7 @@ using std::tr1::shared_ptr;
 #else
 #include <boost/shared_ptr.hpp>
 
-using boost::shared_ptr
+using boost::shared_ptr;
 
 #define  SHARED_PTR boost::shared_ptr 
 
