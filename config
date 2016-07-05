@@ -51,12 +51,19 @@ fi
 
 ngx_addon_name=ngx_http_general_handler_module
 
+
 HTTP_MODULES="$HTTP_MODULES ngx_http_general_handler_module"
 
-NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_general_handler_module.cpp $ngx_addon_dir/img_util.cpp $ngx_addon_dir/module_loader.cpp"
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_general_handler_module.cpp"
+
+if [[ "$NGX_REQUEST_MODULE" != "yes" ]];then
+    NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/img_util.cpp $ngx_addon_dir/module_loader.cpp"
+fi
 
 CORE_INCS="$CORE_INCS $ngx_addon_dir $ngx_addon_dir/handler/include"
 
 CORE_LIBS="$CORE_LIBS -lstdc++"
 
 CFLAGS="$CFLAGS -g"
+
+NGX_REQUEST_MODULE=yes
