@@ -3,16 +3,20 @@
 
 ngx_feature="whether we support the std::tr1::shared_ptr class"
 ngx_feature_libs="-lstdc++"
-ngx_feature_name=
+ngx_feature_name="HAVE_SHARED_PTR"
 ngx_feature_run=no
-ngx_feature_incs="#include <tr1/shared_ptr.h>"
+ngx_feature_incs="#include <tr1/memory>
+#include<tr1/shared_ptr.h>"
+
 ngx_feature_path=
-ngx_feature_test="std::shared_ptr<int> ptr"
+ngx_feature_test="std::tr1::shared_ptr<int> ptr"
 
 PRE_CC=$CC
 CC="g++"
 . auto/feature
 CC=$PRE_CC
+
+ngx_feature_name=""
 
 #gcc version should be gcc 4.3+
 if [ $ngx_found = no ];then

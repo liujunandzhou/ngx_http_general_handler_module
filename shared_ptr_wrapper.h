@@ -20,21 +20,29 @@
 #ifndef __SHARED_PTR_WRAPPER_H__
 #define __SHARED_PTR_WRAPPER_H__
 
-//since gcc 4.3 support shared_ptr class
-#if (__i386 || __amd64) && __GNUC__
-    #define GNUC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
-    #if GNUC_VERSION >= 40300
-        #define HAVE_SHARED_PTR
-    #endif	
-#endif
+extern "C" {
 
+#include<ngx_config.h>
+#include<ngx_core.h>
+#include<ngx_http.h>
+
+}
 
 #ifdef HAVE_SHARED_PTR
+#include <tr1/memory>
 #include <tr1/shared_ptr.h>
-#define  SHARED_PTR std::tr1::shared_ptr;
+
+using std::tr1::shared_ptr;
+
+#define  SHARED_PTR std::tr1::shared_ptr
+
 #else
 #include <boost/shared_ptr.hpp>
+
+using boost::shared_ptr
+
 #define  SHARED_PTR boost::shared_ptr 
+
 #endif
 
 #endif
