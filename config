@@ -1,0 +1,62 @@
+#detect the existence of the shared_ptr class
+#we will detect the std::tr1::shared_ptr and boost::shared_ptr,neither is ok,the ngx_htt_general_handler_module will work
+
+ngx_feature="whether we support the std::tr1::shared_ptr class"
+ngx_feature_libs="-lstdc++"
+ngx_feature_name=
+ngx_feature_run=no
+ngx_feature_incs="#include <tr1/shared_ptr.h>"
+ngx_feature_path=
+ngx_feature_test="std::shared_ptr<int> ptr"
+
+PRE_CC=$CC
+CC="g++"
+. auto/feature
+CC=$PRE_CC
+
+#gcc version should be gcc 4.3+
+if [ $ngx_found = no ];then
+
+	ngx_feature="whether we support the boost::shared_ptr class"
+
+	ngx_feature_path="/usr/include /usr/local/include /usr/local/boost/include"
+
+	if [ -n "$BOOST_INSTALL" ];then
+		ngx_feature_path="$ngx_feature_path $BOOST_INSTALL/include"
+	fi
+
+	ngx_feature_incs="#include<boost/shared_ptr.hpp>"
+	ngx_feature_test="boost::shared_ptr<int> ptr"
+
+	PRE_CC=$CC
+	CC="g++"
+	. auto/feature
+	CC=$PRE_CC
+
+	if [ $ngx_found == no ];then
+
+		cat <<END
+
+$0: error: ngx_http_general_handler_module only available at gcc4.3+ or with BOOST_INSTALL env set
+END
+		exit 2
+	fi
+
+	CORE_INCS="$CORE_INCS $ngx_feature_path"
+
+	echo "boost::shared_ptr is available,using boost::shared_ptr"
+else
+	echo "std::shared_ptr is available,using std::shared_ptr"
+fi
+
+ngx_addon_name=ngx_http_general_handler_module
+
+HTTP_MODULES="$HTTP_MODULES ngx_http_general_handler_module"
+
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_general_handler_module.cpp $ngx_addon_dir/img_util.cpp $ngx_addon_dir/module_loader.cpp"
+
+CORE_INCS="$CORE_INCS $ngx_addon_dir $ngx_addon_dir/handler/include"
+
+CORE_LIBS="$CORE_LIBS -lstdc++"
+
+CFLAGS="$CFLAGS -g"
